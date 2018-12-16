@@ -92,6 +92,14 @@ contract('StarNotary', accounts => {
       assert.equal(price, starPrice);
     });
 
+    it('random malicious user cannot put up star for sale', async function() {
+      expectThrow(
+        this.contract.putStarUpForSale(starId, starPrice, {
+          from: randomMaliciousUser
+        })
+      );
+    });
+
     describe('user2 can buy a star that was put up for sale', () => {
       beforeEach(async function() {
         await this.contract.putStarUpForSale(starId, starPrice, {
