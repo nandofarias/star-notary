@@ -12,19 +12,102 @@
 
 <body>
     <div class="container">
-        <h1>Star Notary</h1>
+        <h1>Create Star</h1>
 
         <div class="row">
-            <label class="bold">Star Name:</label>
-            <label id="star-name"></label>
+            <label for="star-name" class="bold">Star Name:</label>
+            <input id="star-name" />
         </div>
 
         <div class="row">
-            <label class="bold">Star Owner:</label>
-            <label id="star-owner"></label>
+            <label for="star-story" class="bold">Star Story:</label>
+            <input id="star-story" />
+        </div>
+
+        <div class="row">
+            <label for="star-ra" class="bold">Star Ra:</label>
+            <input id="star-ra" />
+        </div>
+
+        <div class="row">
+            <label for="star-dec" class="bold">Star Dec:</label>
+            <input id="star-dec" />
+        </div>
+
+        <div class="row">
+            <label for="star-mag" class="bold">Star Mag:</label>
+            <input id="star-mag" />
         </div>
 
         <button id="claim-button" onclick="claimButtonClicked()">Claim Star</button>
+    </div>
+
+    <div class="container">
+        <h1>Look Up Star By Id</h1>
+
+        <div class="row">
+            <label for="star-id-to-find" class="bold">Star Id:</label>
+            <input id="star-id-to-find" />
+        </div>
+
+        <div class="row">
+            <label for="star-name-received" class="bold">Star Name:</label>
+            <input id="star-name-received" disabled />
+        </div>
+
+        <div class="row">
+            <label for="star-story-received" class=" bold">Star Story:</label>
+            <input id="star-story-received" disabled />
+        </div>
+
+        <div class="row">
+            <label for="star-ra-received" class="bold">Star Ra:</label>
+            <input id="star-ra-received" disabled />
+        </div>
+
+        <div class="row">
+            <label for="star-dec-received" class="bold">Star Dec:</label>
+            <input id="star-dec-received" disabled />
+        </div>
+
+        <div class="row">
+            <label for="star-mag-received" class="bold">Star Mag:</label>
+            <input id="star-mag-received" disabled />
+        </div>
+
+        <button id="find-star-button" onclick="findStarClicked()">Find Star</button>
+    </div>
+
+    <div class="container">
+        <h1>Put Star For Sale</h1>
+
+        <div class="row">
+            <label for="star-id-for-sale" class="bold">Star Id:</label>
+            <input id="star-id-for-sale" />
+        </div>
+
+        <div class="row">
+            <label for="star-price-for-sale" class="bold">Star Price:</label>
+            <input id="star-price-for-sale" />
+        </div>
+
+        <button id="put-for-sale-button" onclick="putStarUpForSaleClicked()">Put for sale</button>
+    </div>
+
+    <div class="container">
+        <h1>Buy Star</h1>
+
+        <div class="row">
+            <label for="star-id-to-buy" class="bold">Star Id:</label>
+            <input id="star-id-to-buy" />
+        </div>
+
+        <div class="row">
+            <label for="star-price-to-buy" class="bold">Star Price:</label>
+            <input id="star-price-to-buy" />
+        </div>
+
+        <button id="buy-star-button" onclick="buyStarClicked()">Buy Star</button>
     </div>
 
     <script>
@@ -411,27 +494,11 @@
             ]
         );
         // Grab the contract at specified deployed address with the interface defined by the ABI
-        var starNotary = StarNotary.at('0x71bd781503089d03322364248d74e5c631f66b2d');
-
-        // Get and display star name
-        starNotary.starName(function (error, result) {
-            if (!error) {
-                document.getElementById('star-name').innerText = result
-            } else {
-                console.log(error);
-            }
-        });
-
-        // Get and display star owner
-        starNotary.starOwner(function (error, result) {
-            if (!error) {
-                document.getElementById('star-owner').innerText = result
-            } else {
-                console.log(error);
-            }
-        });
+        var starNotary = StarNotary.at('0x666637902600847d30f091e59e1cdc2c116a0df0');
 
         // Enable claim button being clicked
+        var starId = 1;
+
         function claimButtonClicked() {
             web3.eth.getAccounts(function (error, accounts) {
                 if (error) {
@@ -439,22 +506,98 @@
                     return
                 }
                 var account = accounts[0]
-                starNotary.claimStar(function (error, result) {
+                var starName = document.getElementById('star-name').value;
+                var starStory = document.getElementById('star-story').value;
+                var starRa = document.getElementById('star-ra').value;
+                var starDec = document.getElementById('star-dec').value;
+                var starMag = document.getElementById('star-mag').value;
+                starNotary.createStar(starName, starStory, starRa, starDec, starMag, starId++, {
+                        from: account
+                    },
+
+                    function (
+                        error,
+                        result) {
+                        if (!error) {
+                            console.log(`https://rinkeby.etherscan.io/tx/${result}`);
+                        } else {
+                            console.log(error);
+                        }
+                    });
+
+            })
+        }
+
+        function findStarClicked() {
+            var starIdToFind = document.getElementById('star-id-to-find').value;
+            starNotary.tokenIdToStarInfo(starIdToFind,
+
+                function (
+                    error,
+                    result) {
                     if (!error) {
-                        var starClaimedEvent = starNotary.starClaimed({
-                            from: account
-                        });
-                        starClaimedEvent.watch(function (error, result) {
-                            if (!error) {
-                                location.reload();
-                            } else {
-                                console.log('watching for star claimed event is failing');
-                            }
-                        });
+                        document.getElementById('star-name-received').value = result[0];
+                        document.getElementById('star-story-received').value = result[1];
+                        document.getElementById('star-ra-received').value = result[2];
+                        document.getElementById('star-dec-received').value = result[3];
+                        document.getElementById('star-mag-received').value = result[4];
                     } else {
                         console.log(error);
                     }
                 });
+        }
+
+        function putStarUpForSaleClicked() {
+            web3.eth.getAccounts(function (error, accounts) {
+                if (error) {
+                    console.log(error)
+                    return
+                }
+                var account = accounts[0]
+                var starIdForSale = document.getElementById('star-id-for-sale').value;
+                var starPriceForSaleString = document.getElementById('star-price-for-sale').value;
+                var starPriceForSale = web3.toWei(Number(starPriceForSaleString), 'ether');
+                starNotary.putStarUpForSale(starIdForSale, starPriceForSale, {
+                        from: account
+                    },
+
+                    function (
+                        error,
+                        result) {
+                        if (!error) {
+                            console.log(`https://rinkeby.etherscan.io/tx/${result}`);
+                        } else {
+                            console.log(error);
+                        }
+                    });
+
+            })
+        }
+
+        function buyStarClicked() {
+            web3.eth.getAccounts(function (error, accounts) {
+                if (error) {
+                    console.log(error)
+                    return
+                }
+                var account = accounts[0]
+                var starIdToBuy = document.getElementById('star-id-to-buy').value;
+                var starPriceToBuyString = document.getElementById('star-price-to-buy').value;
+                var starPriceToBuy = web3.toWei(Number(starPriceToBuyString), 'ether');
+                starNotary.buyStar(starIdToBuy, {
+                        from: account,
+                        value: starPriceToBuy
+                    },
+
+                    function (
+                        error,
+                        result) {
+                        if (!error) {
+                            console.log(`https://rinkeby.etherscan.io/tx/${result}`);
+                        } else {
+                            console.log(error);
+                        }
+                    });
 
             })
         }
