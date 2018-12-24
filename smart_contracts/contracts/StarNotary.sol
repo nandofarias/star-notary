@@ -2,7 +2,14 @@ pragma solidity ^0.4.23;
 
 import "openzeppelin-solidity/contracts/token/ERC721/ERC721.sol";
 
-contract StarNotary is ERC721 { 
+contract StarNotary is ERC721 {
+
+    // struct Coordinates {
+    //     string ra;
+    //     string dec;
+    //     string mag;
+    // } 
+    // Tupple error
 
     struct Star {
         string name;
@@ -10,22 +17,32 @@ contract StarNotary is ERC721 {
         string ra;
         string dec;
         string mag;
+        // Coordinates coordinates;
     }
 
     mapping(uint256 => Star) public tokenIdToStarInfo; 
     mapping(uint256 => uint256) public starsForSale;
-    mapping(bytes32 => bool) public checkIfStarExist;
+    mapping(bytes32 => uint256) public starHashToStarId;
 
     function createStar(string _name, string _starStory, string _ra, string _dec, string _mag, uint256 _tokenId) public {
-        bytes32 starHash = keccak256(_ra, _dec, _mag);
-        require(checkIfStarExist[starHash] == false, "Star already registered");
+        require(checkIfStarExist(_ra, _dec, _mag) == false, "Star already registered");
 
         Star memory newStar = Star(_name, _starStory, _ra, _dec, _mag);
 
         tokenIdToStarInfo[_tokenId] = newStar;
-        checkIfStarExist[starHash] = true;
+        saveStarHash(_tokenId, _ra, _dec, _mag);
 
         _mint(msg.sender, _tokenId);
+    }
+
+    function saveStarHash(uint256 _id, string _ra, string _dec, string _mag) private {
+        bytes32 starHash = keccak256(abi.encodePacked(_ra, _dec, _mag));
+        starHashToStarId[starHash] = _id;
+    }
+
+    function checkIfStarExist(string _ra, string _dec, string _mag) public view returns (bool) {
+        bytes32 starHash = keccak256(abi.encodePacked(_ra, _dec, _mag));
+        return starHashToStarId[starHash] > 0;
     }
 
     function putStarUpForSale(uint256 _tokenId, uint256 _price) public { 
