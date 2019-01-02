@@ -3,10 +3,9 @@ import React from 'react';
 class ReadState extends React.Component {
   async componentDidMount() {
     const { drizzle, drizzleState } = this.props;
-    const contract = drizzle.contracts.StarNotary;
-    const star = await contract.methods.tokenIdToStarInfo(0).call();
-    console.log(star);
+    console.log(drizzle);
     console.log(drizzleState);
+    console.log(drizzle.web3);
   }
 
   render() {

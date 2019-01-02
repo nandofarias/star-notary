@@ -23,6 +23,11 @@ contract StarNotary is ERC721 {
     mapping(uint256 => Star) public tokenIdToStarInfo; 
     mapping(uint256 => uint256) public starsForSale;
     mapping(bytes32 => uint256) public starHashToStarId;
+    uint256[] public starsId;
+
+    function starsArraySize() public view returns (uint) {
+        return starsId.length;
+    }
 
     function createStar(string _name, string _starStory, string _ra, string _dec, string _mag, uint256 _tokenId) public {
         require(checkIfStarExist(_ra, _dec, _mag) == false, "Star already registered");
@@ -30,6 +35,7 @@ contract StarNotary is ERC721 {
         Star memory newStar = Star(_name, _starStory, _ra, _dec, _mag);
 
         tokenIdToStarInfo[_tokenId] = newStar;
+        starsId.push(_tokenId);
         saveStarHash(_tokenId, _ra, _dec, _mag);
 
         _mint(msg.sender, _tokenId);

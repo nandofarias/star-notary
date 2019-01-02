@@ -1,5 +1,12 @@
 import React, { Component } from 'react';
-import ReadState from './ReadState.js';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
+
+import ReadState from './ReadState';
+import BuyStar from './BuyStar';
+import CreateStar from './CreateStar';
+import FindStar from './FindStar';
+import SellStar from './SellStar';
+import Header from './Header';
 
 class App extends Component {
   state = { loading: true, drizzleState: null };
@@ -7,12 +14,9 @@ class App extends Component {
   componentDidMount() {
     const { drizzle } = this.props;
 
-    // subscribe to changes in the store
     this.unsubscribe = drizzle.store.subscribe(() => {
-      // every time the store updates, grab the state from drizzle
       const drizzleState = drizzle.store.getState();
 
-      // check to see if it's ready, if so, update local component state
       if (drizzleState.drizzleStatus.initialized) {
         this.setState({ loading: false, drizzleState });
       }
@@ -25,12 +29,58 @@ class App extends Component {
   render() {
     if (this.state.loading) return 'Loading Drizzle...';
     return (
-      <div className="App">
-        <ReadState
-          drizzle={this.props.drizzle}
-          drizzleState={this.state.drizzleState}
-        />
-      </div>
+      <Router>
+        <div>
+          <Header />
+
+          <Route
+            exact
+            path="/"
+            render={() => (
+              <ReadState
+                drizzle={this.props.drizzle}
+                drizzleState={this.state.drizzleState}
+              />
+            )}
+          />
+          <Route
+            path="/create"
+            render={() => (
+              <CreateStar
+                drizzle={this.props.drizzle}
+                drizzleState={this.state.drizzleState}
+              />
+            )}
+          />
+          <Route
+            path="/buy"
+            render={() => (
+              <BuyStar
+                drizzle={this.props.drizzle}
+                drizzleState={this.state.drizzleState}
+              />
+            )}
+          />
+          <Route
+            path="/find"
+            render={() => (
+              <FindStar
+                drizzle={this.props.drizzle}
+                drizzleState={this.state.drizzleState}
+              />
+            )}
+          />
+          <Route
+            path="/sell"
+            render={() => (
+              <SellStar
+                drizzle={this.props.drizzle}
+                drizzleState={this.state.drizzleState}
+              />
+            )}
+          />
+        </div>
+      </Router>
     );
   }
 }
