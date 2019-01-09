@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { Grommet } from 'grommet';
 
 import ReadState from './ReadState';
 import BuyStar from './BuyStar';
@@ -7,6 +8,16 @@ import CreateStar from './CreateStar';
 import FindStar from './FindStar';
 import SellStar from './SellStar';
 import Header from './Header';
+
+const theme = {
+  global: {
+    font: {
+      family: 'Roboto',
+      size: '14px',
+      height: '20px'
+    }
+  }
+};
 
 class App extends Component {
   state = { loading: true, drizzleState: null };
@@ -30,7 +41,7 @@ class App extends Component {
     if (this.state.loading) return 'Loading Drizzle...';
     return (
       <Router>
-        <div>
+        <Grommet theme={theme}>
           <Header />
 
           <Route
@@ -79,7 +90,7 @@ class App extends Component {
               />
             )}
           />
-        </div>
+        </Grommet>
       </Router>
     );
   }

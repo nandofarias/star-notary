@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { FormField, TextInput, Heading, Button } from 'grommet';
 
 class CreateStar extends Component {
   state = {
@@ -15,73 +16,38 @@ class CreateStar extends Component {
     });
   };
 
-  async createStar() {
+  createStar = async () => {
     const { drizzle, drizzleState } = this.props;
     const { starName, starStory, starRa, starDec, starMag } = this.state;
     const contract = drizzle.contracts.StarNotary;
     const account = drizzleState.accounts[0];
     const size = await contract.methods.starsArraySize().call();
+    const nextId = Number(size) + 1;
     const result = await contract.methods
-      .createStar(starName, starStory, starRa, starDec, starMag, size + 1)
+      .createStar(starName, starStory, starRa, starDec, starMag, nextId)
       .send({ account });
     console.log(result);
-  }
+  };
   render() {
     return (
       <div>
-        <h1>Create Star</h1>
-
-        <div>
-          <label htmlFor="star-name">Star Name:</label>
-          <input
-            id="star-name"
-            name="starName"
-            value={this.state.starName}
-            onChange={this.handleInputChange}
-          />
-        </div>
-
-        <div>
-          <label htmlFor="star-story">Star Story:</label>
-          <input
-            id="star-story"
-            name="starStory"
-            value={this.state.starStory}
-            onChange={this.handleInputChange}
-          />
-        </div>
-
-        <div>
-          <label htmlFor="star-ra">Star Ra:</label>
-          <input
-            id="star-ra"
-            name="starRa"
-            value={this.state.starRa}
-            onChange={this.handleInputChange}
-          />
-        </div>
-
-        <div>
-          <label htmlFor="star-dec">Star Dec:</label>
-          <input
-            id="star-dec"
-            name="starDec"
-            value={this.state.starDec}
-            onChange={this.handleInputChange}
-          />
-        </div>
-
-        <div>
-          <label htmlFor="star-mag">Star Mag:</label>
-          <input
-            id="star-mag"
-            name="starMag"
-            value={this.state.starMag}
-            onChange={this.handleInputChange}
-          />
-        </div>
-
-        <button onClick={() => this.createStar()}>Create Star</button>
+        <Heading level={1}>Create Star</Heading>
+        <FormField label="Star Name">
+          <TextInput onChange={this.handleInputChange} name="starName" />
+        </FormField>
+        <FormField label="Star Story">
+          <TextInput onChange={this.handleInputChange} name="starStory" />
+        </FormField>
+        <FormField label="Star RA">
+          <TextInput onChange={this.handleInputChange} name="starRa" />
+        </FormField>
+        <FormField label="Star DEC">
+          <TextInput onChange={this.handleInputChange} name="starDec" />
+        </FormField>
+        <FormField label="Star MAG">
+          <TextInput onChange={this.handleInputChange} name="starMag" />
+        </FormField>
+        <Button label="Submit" onClick={this.createStar} />
       </div>
     );
   }

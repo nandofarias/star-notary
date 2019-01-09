@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { FormField, TextInput, Heading, Button } from 'grommet';
 
 class SellStar extends Component {
   state = {
@@ -26,29 +27,17 @@ class SellStar extends Component {
   render() {
     return (
       <div>
-        <h1>Put Star For Sale</h1>
+        <Heading level={1}>Sell Star</Heading>
 
-        <div>
-          <label htmlFor="star-id">Star Id:</label>
-          <input
-            id="star-id"
-            name="starId"
-            value={this.state.starId}
-            onChange={this.handleInputChange}
-          />
-        </div>
+        <FormField label="Star ID">
+          <TextInput onChange={this.handleInputChange} name="starId" />
+        </FormField>
 
-        <div>
-          <label htmlFor="star-price">Star Price:</label>
-          <input
-            id="star-price"
-            name="starPrice"
-            value={this.state.starPrice}
-            onChange={this.handleInputChange}
-          />
-        </div>
+        <FormField label="Star Price">
+          <TextInput onChange={this.handleInputChange} name="starPrice" />
+        </FormField>
 
-        <button onClick={this.sellStar}>Put for sale</button>
+        <Button label="Submit" onClick={this.sellStar} />
       </div>
     );
   }
