@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Box, Button, Heading } from 'grommet';
+import { Box, Anchor } from 'grommet';
 
 const Header = () => (
   <Box
@@ -12,23 +12,26 @@ const Header = () => (
     pad={{ vertical: 'small', horizontal: 'medium' }}
     elevation="medium"
   >
-    <Heading level={3}>Star Notary</Heading>
-    <Box direction="row">
-      <Button>
-        <Link to="/">Home</Link>
-      </Button>
-      <Button>
-        <Link to="/create">Create Star</Link>
-      </Button>
-      <Button>
-        <Link to="/buy">Buy Star</Link>
-      </Button>
-      <Button>
-        <Link to="/find">Find Star</Link>
-      </Button>
-      <Button>
-        <Link to="/sell">Sell Star</Link>
-      </Button>
+    <Link to="/">
+      <Anchor size="xxlarge">Star Notary</Anchor>
+    </Link>
+
+    <Box direction="row" gap="medium">
+      <Link to="/">
+        <Anchor tag="span">Home</Anchor>
+      </Link>
+      <Link to="/create">
+        <Anchor tag="span">Create Star</Anchor>
+      </Link>
+      <Link to="/buy">
+        <Anchor tag="span">Buy Star</Anchor>
+      </Link>
+      <Link to="/find">
+        <Anchor tag="span">Find Star</Anchor>
+      </Link>
+      <Link to="/sell">
+        <Anchor tag="span">Sell Star</Anchor>
+      </Link>
     </Box>
   </Box>
 );

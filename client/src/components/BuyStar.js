@@ -1,22 +1,35 @@
 import React, { Component } from 'react';
-import { FormField, TextInput, Heading, Button } from 'grommet';
+import { FormField, TextInput, Heading, Button, Box } from 'grommet';
+import { GridLoader } from 'react-spinners';
+import Toast from './Toast';
 
 class BuyStar extends Component {
   state = {
     starId: '',
-    starPrice: ''
+    starPrice: '',
+    loading: false,
+    result: null
   };
 
   buyStar = async () => {
+    this.setState({ loading: true });
     const { drizzle, drizzleState } = this.props;
     const { starId, starPrice } = this.state;
     const contract = drizzle.contracts.StarNotary;
     const account = drizzleState.accounts[0];
     const value = drizzle.web3.utils.toWei(starPrice, 'ether');
-    const result = await contract.methods
-      .buyStar(starId)
-      .send({ account, value });
-    console.log(result);
+    try {
+      await contract.methods.buyStar(starId).send({ account, value });
+      this.setState({
+        loading: false,
+        result: `Congratulation, star #${starId} is now yours`
+      });
+    } catch (error) {
+      this.setState({
+        loading: false,
+        result: 'Unable to process your request'
+      });
+    }
   };
 
   handleInputChange = ({ target: { name, value } }) => {
@@ -26,19 +39,37 @@ class BuyStar extends Component {
   };
   render() {
     return (
-      <div>
-        <Heading level={1}>Buy Star</Heading>
+      <Box fill align="center" justify="center">
+        {this.state.loading ? (
+          <GridLoader
+            sizeUnit={'px'}
+            size={50}
+            color={'#7D4CDB'}
+            loading={this.state.loading}
+          />
+        ) : (
+          <Box width="medium">
+            <Toast
+              background="primary"
+              text={this.state.result}
+              render={this.state.result}
+              onClose={() => this.setState({ result: null })}
+            />
 
-        <FormField label="Star ID">
-          <TextInput onChange={this.handleInputChange} name="starId" />
-        </FormField>
+            <Heading level={3}>Buy Star</Heading>
 
-        <FormField label="Star Price">
-          <TextInput onChange={this.handleInputChange} name="starPrice" />
-        </FormField>
+            <FormField label="Star ID">
+              <TextInput onChange={this.handleInputChange} name="starId" />
+            </FormField>
 
-        <Button label="Submit" onClick={this.buyStar} />
-      </div>
+            <FormField label="Star Price">
+              <TextInput onChange={this.handleInputChange} name="starPrice" />
+            </FormField>
+
+            <Button label="Submit" onClick={this.buyStar} primary={true} />
+          </Box>
+        )}
+      </Box>
     );
   }
 }

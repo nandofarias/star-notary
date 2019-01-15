@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { Grommet } from 'grommet';
 
-import ReadState from './ReadState';
+import Home from './Home';
 import BuyStar from './BuyStar';
 import CreateStar from './CreateStar';
 import FindStar from './FindStar';
@@ -44,16 +44,7 @@ class App extends Component {
         <Grommet theme={theme}>
           <Header />
 
-          <Route
-            exact
-            path="/"
-            render={() => (
-              <ReadState
-                drizzle={this.props.drizzle}
-                drizzleState={this.state.drizzleState}
-              />
-            )}
-          />
+          <Route exact path="/" component={Home} />
           <Route
             path="/create"
             render={() => (
